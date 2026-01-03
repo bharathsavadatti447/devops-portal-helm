@@ -1,0 +1,16 @@
+namespace: devops
+
+rails:
+  image: barisagar/devops-assignment-portal:latest
+  replicas: 1
+  servicePort: 3000
+  imagePullSecret: dockerhub-secret
+
+postgres:
+  image: postgres:15-alpine
+  port: 5432
+  user: devopsportal
+  storageClass: standard
+
+ingress:
+  host: barisagar.info

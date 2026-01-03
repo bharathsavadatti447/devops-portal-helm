@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rails-app
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.rails.replicas }}
+  selector:
+    matchLabels:
+      app: rails-app
+  template:
+    metadata:
+      labels:
+        app: rails-app
+    spec:
+      {{- if .Values.rails.imagePullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.rails.imagePullSecret }}
+      {{- end }}
+      containers:
+        - name: rails-app
+          image: {{ .Values.rails.image }}
+          ports:
+            - containerPort: {{ .Values.rails.servicePort }}
+          envFrom:
+            - configMapRef:
+                name: rails-config
+          env:
+            - name: DATABASE_HOST
+              value: postgres
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_DB
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: rails-secret
+                  key: SECRET_KEY_BASE
+
+
+

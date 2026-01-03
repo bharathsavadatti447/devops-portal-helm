@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rails-config
+  namespace: {{ .Values.namespace }}
+data:
+  DATABASE_HOST: postgres
+  DATABASE_PORT: "{{ .Values.postgres.port }}"
+  DATABASE_USER: {{ .Values.postgres.user }}
+  DATABASE_PASSWORD: {{ .Values.postgres.password }}
+  DATABASE_NAME: {{ .Values.postgres.db }}
